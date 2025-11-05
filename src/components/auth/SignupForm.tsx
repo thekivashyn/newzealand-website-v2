@@ -67,6 +67,7 @@ export const SignupForm = component$<SignupFormProps>(() => {
   const isPasswordFocused = useSignal(false);
   const passwordStrength = useSignal<PasswordStrength>({ score: 0, level: 'none', checks: [], percentage: 0, color: 'gray' });
 
+  // eslint-disable-next-line qwik/no-use-visible-task
   useVisibleTask$(({ track }) => {
     track(() => formData.password);
     passwordStrength.value = getPasswordStrength(formData.password);

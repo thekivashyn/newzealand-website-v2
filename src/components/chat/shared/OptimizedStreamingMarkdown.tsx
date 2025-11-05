@@ -67,6 +67,7 @@ export const OptimizedStreamingMarkdown = component$<OptimizedStreamingMarkdownP
     contentLength: number;
   } | null>(null);
 
+  // eslint-disable-next-line qwik/no-use-visible-task
   useVisibleTask$(({ track }) => {
     track(() => props.content);
     track(() => props.isStreaming);

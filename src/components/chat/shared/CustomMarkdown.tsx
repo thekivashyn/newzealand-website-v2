@@ -39,6 +39,7 @@ export const CustomMarkdown = component$<CustomMarkdownProps>((props) => {
   const lastProcessedContent = useSignal('');
 
   // Process markdown and render KaTeX
+  // eslint-disable-next-line qwik/no-use-visible-task
   useVisibleTask$(async ({ track }) => {
     track(() => props.content);
     

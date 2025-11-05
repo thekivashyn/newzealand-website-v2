@@ -10,6 +10,7 @@ export default component$(() => {
   const location = useLocation();
   
   // Sync chatId from URL to store whenever URL changes
+  // eslint-disable-next-line qwik/no-use-visible-task
   useVisibleTask$(({ track }) => {
     // Track location.url.search to react to URL changes
     track(() => location.url.search);

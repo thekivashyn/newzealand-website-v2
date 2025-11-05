@@ -18,6 +18,7 @@ export const Sidebar = component$(() => {
   const searchQuery = useSignal('');
 
   // Sync with store changes via events
+  // eslint-disable-next-line qwik/no-use-visible-task
   useVisibleTask$(() => {
     // Initial sync
     isDesktopSidebarCollapsed.value = uiStore.isDesktopSidebarCollapsed;

@@ -12,6 +12,7 @@ export const SubCategorySelectionStep = component$(() => {
   const authUser = useSignal(authStore.user);
   
   // Sync with store changes
+  // eslint-disable-next-line qwik/no-use-visible-task
   useVisibleTask$(() => {
     currentChatTerm.value = uiStore.currentChatTerm;
     currentChatSubject.value = uiStore.currentChatSubject;

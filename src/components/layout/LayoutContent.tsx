@@ -10,6 +10,7 @@ export const LayoutContent = component$(() => {
   const isLoading = useSignal(authStore.isLoading);
 
   // Sync authStore changes via events (optimized: minimal event handler)
+  // eslint-disable-next-line qwik/no-use-visible-task
   useVisibleTask$(() => {
     const handleAuthStateChange = () => {
       // Sync from store as source of truth

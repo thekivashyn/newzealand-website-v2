@@ -21,6 +21,7 @@ export const ImageQuestionTemplate = component$<ImageQuestionTemplateProps>((pro
   const isImageModalOpen = useSignal(false);
 
   // ESC key to close modal
+  // eslint-disable-next-line qwik/no-use-visible-task
   useVisibleTask$(({ track }) => {
     track(() => isImageModalOpen.value);
     

@@ -41,6 +41,7 @@ export const ChatMessages = component$<ChatMessagesProps>((props) => {
   });
 
   // Combined auto-scroll logic and event listener in single hook
+  // eslint-disable-next-line qwik/no-use-visible-task
   useVisibleTask$(({ track }) => {
     // Track only what we need for scroll logic
     const messagesLength = track(() => props.messages.length);
@@ -81,6 +82,7 @@ export const ChatMessages = component$<ChatMessagesProps>((props) => {
   });
 
   // Setup event listener and initial scroll in single hook
+  // eslint-disable-next-line qwik/no-use-visible-task
   useVisibleTask$(() => {
     const handleUserSubmit = () => {
       userJustSubmitted.value = true;

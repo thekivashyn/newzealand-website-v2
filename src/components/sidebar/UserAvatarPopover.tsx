@@ -80,6 +80,7 @@ export const UserAvatarPopover = component$<UserAvatarPopoverProps>((props) => {
   });
 
   // Handle click outside
+  // eslint-disable-next-line qwik/no-use-visible-task
   useVisibleTask$(({ track }) => {
     track(() => isOpen.value);
     

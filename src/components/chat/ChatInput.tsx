@@ -41,6 +41,7 @@ export const ChatInput = component$<ChatInputProps>((props) => {
   const isStreaming = props.status === 'loading';
 
   // Auto-focus: mount and after streaming
+  // eslint-disable-next-line qwik/no-use-visible-task
   useVisibleTask$(({ track }) => {
     track(() => props.status);
     const textarea = textareaRef.value;
@@ -50,6 +51,7 @@ export const ChatInput = component$<ChatInputProps>((props) => {
   });
 
   // Reset submitting flag
+  // eslint-disable-next-line qwik/no-use-visible-task
   useVisibleTask$(({ track }) => {
     track(() => props.status);
     if (props.status === 'ready') {
@@ -98,6 +100,7 @@ export const ChatInput = component$<ChatInputProps>((props) => {
   });
 
   // Sync textarea value with props.input and auto-resize
+  // eslint-disable-next-line qwik/no-use-visible-task
   useVisibleTask$(({ track }) => {
     track(() => props.input);
     const textarea = textareaRef.value;
@@ -151,6 +154,7 @@ export const ChatInput = component$<ChatInputProps>((props) => {
   });
 
   // Prevent zoom on iOS
+  // eslint-disable-next-line qwik/no-use-visible-task
   useVisibleTask$(() => {
     const textarea = textareaRef.value;
     if (!textarea) return;

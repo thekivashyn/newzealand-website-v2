@@ -4,6 +4,7 @@ import { uiStore, uiActions } from '~/store/ui';
 export const SidebarToggleButton = component$(() => {
   const isCollapsed = useSignal(uiStore.isDesktopSidebarCollapsed);
 
+  // eslint-disable-next-line qwik/no-use-visible-task
   useVisibleTask$(() => {
     isCollapsed.value = uiStore.isDesktopSidebarCollapsed;
 

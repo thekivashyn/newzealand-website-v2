@@ -18,6 +18,7 @@ export const ChatList = component$<ChatListProps>((props) => {
   const simpleBarRef = useSignal<HTMLDivElement>();
   
   // Sync active chat ID
+  // eslint-disable-next-line qwik/no-use-visible-task
   useVisibleTask$(() => {
     activeChatId.value = chatStore.currentChatId;
     
@@ -37,6 +38,7 @@ export const ChatList = component$<ChatListProps>((props) => {
   });
   
   // Sync chat history state
+  // eslint-disable-next-line qwik/no-use-visible-task
   useVisibleTask$(() => {
     const updateState = () => {
       chatsSignal.value = chatHistoryStore.chats;
@@ -59,6 +61,7 @@ export const ChatList = component$<ChatListProps>((props) => {
   });
   
   // Fetch chat history on mount
+  // eslint-disable-next-line qwik/no-use-visible-task
   useVisibleTask$(() => {
     loadChatHistory({ page: 1, limit: 20 });
   });

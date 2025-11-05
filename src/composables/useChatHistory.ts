@@ -11,6 +11,7 @@ export const useChatHistory = () => {
   const isFetchingMore = useSignal(chatHistoryStore.isFetchingMore);
 
   // Sync store changes
+  // eslint-disable-next-line qwik/no-use-visible-task
   useVisibleTask$(() => {
     chats.value = chatHistoryStore.chats;
     isLoading.value = chatHistoryStore.isLoading;

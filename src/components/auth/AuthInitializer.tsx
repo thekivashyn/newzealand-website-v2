@@ -6,6 +6,7 @@ import { logger } from '../../lib/logger';
 export const AuthInitializer = component$(() => {
   const hasInitialized = useSignal(false);
 
+  // eslint-disable-next-line qwik/no-use-visible-task
   useVisibleTask$(async () => {
     // Prevent multiple initializations
     if (hasInitialized.value) {

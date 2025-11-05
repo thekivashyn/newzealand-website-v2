@@ -6,6 +6,7 @@ export const MainContentWrapper = component$(() => {
   const isDesktopSidebarCollapsed = useSignal(uiStore.isDesktopSidebarCollapsed);
 
   // Sync with store changes via events
+  // eslint-disable-next-line qwik/no-use-visible-task
   useVisibleTask$(() => {
     // Initial sync
     isDesktopSidebarCollapsed.value = uiStore.isDesktopSidebarCollapsed;

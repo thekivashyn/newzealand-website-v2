@@ -23,6 +23,7 @@ export const Chat = component$(() => {
   const chatMessages = useSignal(chatStore.messages);
   const currentChatId = useSignal(chatStore.currentChatId);
   
+  // eslint-disable-next-line qwik/no-use-visible-task
   useVisibleTask$(({ track }) => {
     // Track store properties
     track(() => chatStore.messages);
@@ -51,6 +52,7 @@ export const Chat = component$(() => {
   });
 
   // Listen for store changes via events and preset streaming completion
+  // eslint-disable-next-line qwik/no-use-visible-task
   useVisibleTask$(() => {
     const handleChatStateChange = () => {
       // Sync from store as source of truth (event is just notification)

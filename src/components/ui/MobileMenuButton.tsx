@@ -6,6 +6,7 @@ export const MobileMenuButton = component$(() => {
   const isMobileSidebarOpen = useSignal(uiStore.isMobileSidebarOpen);
 
   // Sync with store changes via events
+  // eslint-disable-next-line qwik/no-use-visible-task
   useVisibleTask$(() => {
     // Initial sync
     isMobileSidebarOpen.value = uiStore.isMobileSidebarOpen;

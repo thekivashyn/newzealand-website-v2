@@ -24,6 +24,7 @@ export const useLoadChat = (options: UseLoadChatOptions = {}) => {
 
   // Subscribe to chat flow controller state changes
   // This provides reactive UI updates for loading states
+  // eslint-disable-next-line qwik/no-use-visible-task
   useVisibleTask$(() => {
     if (!enabled) return;
 
@@ -40,6 +41,7 @@ export const useLoadChat = (options: UseLoadChatOptions = {}) => {
   });
 
   // Cleanup on unmount
+  // eslint-disable-next-line qwik/no-use-visible-task
   useVisibleTask$(() => {
     return () => {
       chatFlowController.abort();

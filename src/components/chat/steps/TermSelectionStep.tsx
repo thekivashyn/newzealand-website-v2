@@ -59,6 +59,7 @@ const TERMS = [
 
 export const TermSelectionStep = component$(() => {
   // Add float animation styles
+  // eslint-disable-next-line qwik/no-use-visible-task
   useVisibleTask$(() => {
     if (typeof window !== 'undefined') {
       const style = document.createElement('style');

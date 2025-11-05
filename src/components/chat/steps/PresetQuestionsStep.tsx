@@ -25,6 +25,7 @@ export const PresetQuestionsStep = component$<PresetQuestionsStepProps>((props) 
   const authUser = useSignal(authStore.user);
   
   // Sync with store changes
+  // eslint-disable-next-line qwik/no-use-visible-task
   useVisibleTask$(() => {
     currentChatTerm.value = uiStore.currentChatTerm;
     currentChatSubject.value = uiStore.currentChatSubject;
