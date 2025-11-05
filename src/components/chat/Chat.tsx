@@ -52,8 +52,7 @@ export const Chat = component$(() => {
 
   // Listen for store changes via events and preset streaming completion
   useVisibleTask$(() => {
-    const handleChatStateChange = (event: Event) => {
-      const customEvent = event as CustomEvent;
+    const handleChatStateChange = () => {
       // Sync from store as source of truth (event is just notification)
       chatMessages.value = chatStore.messages;
       currentChatId.value = chatStore.currentChatId;
@@ -174,7 +173,7 @@ export const Chat = component$(() => {
   });
 
   // Handle message sending from PresetQuestionsStep
-  const handleSendMessage$ = $(async (_messageContent: string) => {
+  const handleSendMessage$ = $(async () => {
     // Message is already added to store by useQuestionHandler
     const lastMessage = chatMessages.value[chatMessages.value.length - 1];
     if (!lastMessage) return;

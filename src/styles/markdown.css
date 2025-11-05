@@ -377,8 +377,8 @@
   box-shadow:
     0 10px 28px rgba(99, 102, 241, 0.12),
     inset 0 1px 0 rgba(255, 255, 255, 0.04);
-  transition: box-shadow 180ms ease, border-color 180ms ease, transform 180ms ease;
-  animation: kxFadeInUp 200ms ease;
+  transition: none;
+  animation: none;
 }
 
 .markdown-content .katex-display::before {
@@ -520,9 +520,9 @@
   contain: layout style;
 }
 
-/* Smooth transitions for streaming content */
+/* Smooth transitions for streaming content - DISABLED to prevent motion append */
 .streaming-block-wrapper > * {
-  animation: fadeInSmooth 0.15s ease-out;
+  animation: none;
 }
 
 @keyframes fadeInSmooth {

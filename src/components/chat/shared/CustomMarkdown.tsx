@@ -3,18 +3,23 @@ import { marked } from 'marked';
 import katex from 'katex';
 import { preprocessMathDelimiters } from '~/utils/markdownRenderer';
 
-const sanitizeRawHtml = (html: string) =>
-  html
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;');
-
-marked.use({
-  renderer: {
-    html(html: string) {
-      return sanitizeRawHtml(html);
-    },
-  },
+// Configure marked globally
+marked.setOptions({
+  breaks: true,
+  gfm: true,
 });
+
+// Cache regex patterns for better performance
+const BR_TAG_REGEX = /<\s*br\s*\/?\s*>/gi;
+const BR_ENTITY_REGEX = /&lt;\s*br\s*\/?\s*&gt;/gi;
+const NBSP_REGEX = /&nbsp;/g;
+const AMP_REGEX = /&amp;/g;
+const LT_REGEX = /&lt;/g;
+const GT_REGEX = /&gt;/g;
+const DISPLAY_MATH_REGEX = /\$\$([\s\S]*?)\$\$/g;
+const INLINE_MATH_REGEX = /\$([^$\n]+?)\$/g;
+const PRE_TAG_REGEX = /<pre[\s\S]*?<\/pre>/gi;
+const CODE_TAG_REGEX = /<code[\s\S]*?<\/code>/gi;
 
 interface CustomMarkdownProps {
   content: string;
@@ -31,6 +36,7 @@ interface CustomMarkdownProps {
  */
 export const CustomMarkdown = component$<CustomMarkdownProps>((props) => {
   const htmlContent = useSignal('');
+  const lastProcessedContent = useSignal('');
 
   // Process markdown and render KaTeX
   useVisibleTask$(async ({ track }) => {
@@ -38,8 +44,16 @@ export const CustomMarkdown = component$<CustomMarkdownProps>((props) => {
     
     if (!props.content) {
       htmlContent.value = '';
+      lastProcessedContent.value = '';
       return;
     }
+
+    // Skip re-processing if content hasn't changed (optimization for stable blocks)
+    if (props.content === lastProcessedContent.value && htmlContent.value) {
+      return;
+    }
+
+    lastProcessedContent.value = props.content;
 
     // Step 1: Preprocess LaTeX delimiters (\[...\] and \(...\) to $$...$$ and $...$)
     // This matches frontend's useMarkdownRenderer hook
@@ -48,19 +62,16 @@ export const CustomMarkdown = component$<CustomMarkdownProps>((props) => {
     // Step 1.5: Decode HTML entities and handle HTML tags (after math preprocessing)
     // This ensures math expressions are preserved while cleaning up HTML artifacts
     // Order matters: decode <br> first, then other entities
+    // Use cached regex patterns for better performance
+    BR_TAG_REGEX.lastIndex = 0;
+    BR_ENTITY_REGEX.lastIndex = 0;
     processedContent = processedContent
-      .replace(/<\s*br\s*\/?\s*>/gi, '\n') // Handle plain HTML <br>, <br/>, < br >
-      .replace(/&lt;\s*br\s*\/?\s*&gt;/gi, '\n') // Decode <br>, <br/>, < br >, < br/ > from HTML entities
-      .replace(/&nbsp;/g, ' ')              // Non-breaking spaces
-      .replace(/&amp;/g, '&');               // Ampersands (must be after <br> to avoid conflicts)
+      .replace(BR_TAG_REGEX, '\n') // Handle plain HTML <br>, <br/>, < br >
+      .replace(BR_ENTITY_REGEX, '\n') // Decode <br>, <br/>, < br >, < br/ > from HTML entities
+      .replace(NBSP_REGEX, ' ')              // Non-breaking spaces
+      .replace(AMP_REGEX, '&');               // Ampersands (must be after <br> to avoid conflicts)
 
-    // Step 2: Configure marked for markdown parsing (matches frontend config)
-    marked.setOptions({
-      breaks: true, // Convert \n to <br>
-      gfm: true,    // GitHub Flavored Markdown
-    });
-
-    // Step 3: Parse markdown to HTML
+    // Step 2: Parse markdown to HTML
     let html = '';
     try {
       html = await marked.parse(processedContent) as string;
@@ -71,15 +82,18 @@ export const CustomMarkdown = component$<CustomMarkdownProps>((props) => {
 
     // Preserve code blocks and inline code to prevent math processing within code snippets
     const codePlaceholders: string[] = [];
-    const CODE_PLACEHOLDER_PREFIX = `__CODE_BLOCK_${Date.now()}_${Math.random().toString(36).slice(2)}_`;
+    // Use timestamp-based prefix only, no need for random (timestamp is unique enough per render)
+    const CODE_PLACEHOLDER_PREFIX = `__CODE_BLOCK_${Date.now()}_`;
 
+    PRE_TAG_REGEX.lastIndex = 0;
+    CODE_TAG_REGEX.lastIndex = 0;
     html = html
-      .replace(/<pre[\s\S]*?<\/pre>/gi, (match) => {
+      .replace(PRE_TAG_REGEX, (match) => {
         const placeholder = `${CODE_PLACEHOLDER_PREFIX}${codePlaceholders.length}__`;
         codePlaceholders.push(match);
         return placeholder;
       })
-      .replace(/<code[\s\S]*?<\/code>/gi, (match) => {
+      .replace(CODE_TAG_REGEX, (match) => {
         const placeholder = `${CODE_PLACEHOLDER_PREFIX}${codePlaceholders.length}__`;
         codePlaceholders.push(match);
         return placeholder;
@@ -91,16 +105,22 @@ export const CustomMarkdown = component$<CustomMarkdownProps>((props) => {
     // Display math: $$...$$ (must be done before inline math)
     const displayMathPlaceholders: string[] = [];
     // Use a unique placeholder that won't conflict with content
-    const placeholderPrefix = `__KATEX_DISPLAY_${Date.now()}_${Math.random().toString(36).substring(7)}_`;
+    // Optimized: Use timestamp only (unique enough per render cycle)
+    const placeholderPrefix = `__KATEX_DISPLAY_${Date.now()}_`;
     
-    html = html.replace(/\$\$([\s\S]*?)\$\$/g, (match, mathContent) => {
+    DISPLAY_MATH_REGEX.lastIndex = 0;
+    html = html.replace(DISPLAY_MATH_REGEX, (match, mathContent) => {
       try {
+        // Use cached regex patterns for normalization
+        BR_TAG_REGEX.lastIndex = 0;
+        LT_REGEX.lastIndex = 0;
+        GT_REGEX.lastIndex = 0;
         const normalizedMath = mathContent
-          .replace(/<\s*br\s*\/?\s*>/gi, '\n')
-          .replace(/&nbsp;/g, ' ')
-          .replace(/&lt;/g, '<')
-          .replace(/&gt;/g, '>')
-          .replace(/&amp;/g, '&')
+          .replace(BR_TAG_REGEX, '\n')
+          .replace(NBSP_REGEX, ' ')
+          .replace(LT_REGEX, '<')
+          .replace(GT_REGEX, '>')
+          .replace(AMP_REGEX, '&')
           .trim();
 
         const rendered = katex.renderToString(normalizedMath, {
@@ -121,19 +141,24 @@ export const CustomMarkdown = component$<CustomMarkdownProps>((props) => {
     });
 
     // Inline math: $...$ (now safe to match since $$...$$ are placeholders)
-    html = html.replace(/\$([^$\n]+?)\$/g, (match, mathContent) => {
+    INLINE_MATH_REGEX.lastIndex = 0;
+    html = html.replace(INLINE_MATH_REGEX, (match, mathContent) => {
       // Skip if it's part of a placeholder
       if (match.includes(placeholderPrefix)) {
         return match;
       }
       
       try {
+        // Use cached regex patterns for normalization
+        BR_TAG_REGEX.lastIndex = 0;
+        LT_REGEX.lastIndex = 0;
+        GT_REGEX.lastIndex = 0;
         const normalizedMath = mathContent
-          .replace(/<\s*br\s*\/?\s*>/gi, '\n')
-          .replace(/&nbsp;/g, ' ')
-          .replace(/&lt;/g, '<')
-          .replace(/&gt;/g, '>')
-          .replace(/&amp;/g, '&')
+          .replace(BR_TAG_REGEX, '\n')
+          .replace(NBSP_REGEX, ' ')
+          .replace(LT_REGEX, '<')
+          .replace(GT_REGEX, '>')
+          .replace(AMP_REGEX, '&')
           .trim();
 
         return katex.renderToString(normalizedMath, {
@@ -150,13 +175,29 @@ export const CustomMarkdown = component$<CustomMarkdownProps>((props) => {
     });
 
     // Restore display math placeholders
+    // Optimized: Use string replace instead of regex for better performance
     displayMathPlaceholders.forEach((rendered, index) => {
       const placeholder = `${placeholderPrefix}${index}__`;
-      const blockPattern = new RegExp(`<p>\\s*${placeholder}\\s*<\/p>`, 'g');
-      if (blockPattern.test(html)) {
-        html = html.replace(blockPattern, rendered);
+      const wrappedPlaceholder = `<p>${placeholder}</p>`;
+      if (html.includes(wrappedPlaceholder)) {
+        html = html.replace(wrappedPlaceholder, rendered);
+      } else {
+        // Also check for whitespace variations
+        const spacedVariations = [
+          `<p> ${placeholder} </p>`,
+          `<p>\n${placeholder}\n</p>`,
+          `<p>\n${placeholder}</p>`,
+          `<p>${placeholder}\n</p>`
+        ];
+        for (const variant of spacedVariations) {
+          if (html.includes(variant)) {
+            html = html.replace(variant, rendered);
+            return;
+          }
+        }
+        // Fallback: direct replace
+        html = html.replace(placeholder, rendered);
       }
-      html = html.replace(placeholder, rendered);
     });
 
     // Restore code placeholders
@@ -173,7 +214,10 @@ export const CustomMarkdown = component$<CustomMarkdownProps>((props) => {
       dangerouslySetInnerHTML={htmlContent.value}
       style={{
         contentVisibility: 'auto',
-        contain: 'layout style paint'
+        contain: 'layout style paint',
+        willChange: 'auto',
+        transition: 'none',
+        animation: 'none'
       }}
     />
   );

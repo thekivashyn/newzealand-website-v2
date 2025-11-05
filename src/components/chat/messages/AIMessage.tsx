@@ -1,6 +1,7 @@
 import { component$, useSignal, $ } from '@builder.io/qwik';
 import type { ChatMessage } from '~/store/types';
 import { CustomMarkdown } from '../shared/CustomMarkdown';
+import { OptimizedStreamingMarkdown } from '../shared/OptimizedStreamingMarkdown';
 
 interface AIMessageProps {
   message: ChatMessage;
@@ -53,7 +54,11 @@ export const AIMessage = component$<AIMessageProps>((props) => {
       <div class="min-w-0 flex-1 space-y-2 sm:space-y-3">
         {/* Markdown Content */}
         <div class="prose prose-invert prose-p:!my-0 prose-pre:!my-0 prose-pre:!bg-transparent prose-pre:!p-0 max-w-none text-black">
-          <CustomMarkdown content={content} />
+          {props.isStreaming ? (
+            <OptimizedStreamingMarkdown content={content} isStreaming={true} />
+          ) : (
+            <CustomMarkdown content={content} />
+          )}
         </div>
 
         {/* Action buttons - always visible */}

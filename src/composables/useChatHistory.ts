@@ -1,10 +1,9 @@
 // Composable for chat history
-import { useStore, useSignal, useVisibleTask$ } from '@builder.io/qwik';
+import { useSignal, useVisibleTask$ } from '@builder.io/qwik';
 import { chatHistoryStore, chatHistoryActions } from '~/store/chatHistory';
 import { fetchChatHistory, deleteChatHistory } from '../services/history.service';
 
 export const useChatHistory = () => {
-  const store = useStore(chatHistoryStore);
   const chats = useSignal(chatHistoryStore.chats);
   const isLoading = useSignal(chatHistoryStore.isLoading);
   const error = useSignal(chatHistoryStore.error);

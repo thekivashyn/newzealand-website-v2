@@ -33,7 +33,7 @@ export const AuthInitializer = component$(() => {
     }
 
     // Listen for logout events
-    const handleAuthLogout = (event: Event) => {
+    const handleAuthLogout = () => {
       logger.debug('🔒 Auth logout event received');
       authActions.logout();
       hasInitialized.value = false; // Reset flag on logout

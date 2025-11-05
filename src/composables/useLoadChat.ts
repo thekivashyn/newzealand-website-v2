@@ -1,6 +1,4 @@
 import { useSignal, useVisibleTask$ } from '@builder.io/qwik';
-import { chatStore } from '~/store/chat';
-import { uiStore } from '~/store/ui';
 import { chatFlowController, ChatLoadState } from '../services/chatFlowController';
 
 interface UseLoadChatOptions {

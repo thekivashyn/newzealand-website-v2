@@ -37,7 +37,7 @@ function parsePresetResponse(content: string): {
         multipleChoiceData: data,
       };
     }
-  } catch (e) {
+  } catch {
     // Not a valid JSON, continue with normal flow
   }
 

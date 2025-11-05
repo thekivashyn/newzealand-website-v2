@@ -51,7 +51,7 @@ function saveAuthToStorage(state: Partial<AuthState>) {
   if (state.user !== undefined) {
     const userStr = state.user ? JSON.stringify(state.user) : null;
     if (userStr !== currentUserData) {
-      if (state.user) {
+      if (state.user && userStr) {
         localStorage.setItem(USER_KEY, userStr);
         localStorage.setItem(CACHE_TIMESTAMP_KEY, Date.now().toString());
       } else if (currentUserData) {

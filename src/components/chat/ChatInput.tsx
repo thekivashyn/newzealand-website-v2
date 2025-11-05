@@ -221,10 +221,10 @@ export const ChatInput = component$<ChatInputProps>((props) => {
               aria-label="Ask me anything about this problem"
               aria-disabled={isStreaming || isSubmitting.value}
               autocomplete="off"
-              autocorrect="off"
-              autocapitalize="off"
-              spellcheck="false"
-              maxlength={50000}
+              autoCorrect="off"
+              autoCapitalize="off"
+              spellcheck={false}
+              maxLength={50000}
             />
             
             <div class="flex items-center justify-between p-2 sm:p-2 pt-0 relative z-10">
@@ -278,7 +278,7 @@ export const ChatInput = component$<ChatInputProps>((props) => {
                   )}
 
                   <svg class="h-5 w-5 sm:h-6 sm:w-6 relative z-10 drop-shadow-sm transition-all duration-300 group-hover/btn:-translate-y-0.5 group-hover/btn:scale-110 group-hover/btn:drop-shadow-lg" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                    <path fillRule="evenodd" d="M11.47 4.72a.75.75 0 011.06 0l7.5 7.5a.75.75 0 11-1.06 1.06L12 6.31l-6.97 6.97a.75.75 0 01-1.06-1.06l7.5-7.5z" clipRule="evenodd" />
+                    <path fill-rule="evenodd" d="M11.47 4.72a.75.75 0 011.06 0l7.5 7.5a.75.75 0 11-1.06 1.06L12 6.31l-6.97 6.97a.75.75 0 01-1.06-1.06l7.5-7.5z" clip-rule="evenodd" />
                   </svg>
                 </button>
               )}
