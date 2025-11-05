@@ -1,0 +1,547 @@
+/* 
+  Custom Markdown CSS for Dark Theme - Enterprise Look
+  - A modern, readable, and professional stylesheet for Markdown content on a dark background.
+  - Usable with TailwindCSS.
+*/
+
+/* --- Base --- */
+:root {
+  --math-accent-1: #8b5cf6; /* violet-500 */
+  --math-accent-2: #60a5fa; /* sky-400 */
+  --math-surface-1: rgba(17, 24, 39, 0.85); /* slate-900/85 */
+  --math-surface-2: rgba(31, 41, 55, 0.9);  /* slate-800/90 */
+}
+
+/* Animations */
+@keyframes kxFadeInUp {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.markdown-content {
+  color: inherit; /* inherit from parent theme */
+  font-size: 1rem;
+  line-height: 1.7;
+  word-wrap: break-word;
+}
+
+/* --- Block Elements --- */
+.markdown-content p,
+.markdown-content blockquote,
+.markdown-content ul,
+.markdown-content ol,
+.markdown-content dl,
+.markdown-content table,
+.markdown-content pre {
+  margin-top: 0;
+  margin-bottom: 1rem;
+}
+
+/* --- Headings --- */
+.markdown-content h1,
+.markdown-content h2,
+.markdown-content h3,
+.markdown-content h4,
+.markdown-content h5,
+.markdown-content h6 {
+  margin-top: 1.5rem;
+  margin-bottom: 1rem;
+  font-weight: 600;
+  line-height: 1.25;
+  color: inherit; /* inherit from parent theme */
+}
+
+.markdown-content h1 {
+  padding-bottom: .3em;
+  font-size: 2em;
+  border-bottom: 1px solid #4b5563; /* gray-600 */
+}
+
+.markdown-content h2 {
+  padding-bottom: .3em;
+  font-size: 1.5em;
+  border-bottom: 1px solid #374151; /* gray-700 */
+}
+
+.markdown-content h3 {
+  font-size: 1.25em;
+}
+
+.markdown-content h4 {
+  font-size: 1.1em;
+}
+
+.markdown-content h5 {
+  font-size: 1em;
+}
+
+.markdown-content h6 {
+  font-size: 0.9em;
+  color: inherit; /* inherit from parent theme */
+}
+
+/* --- Links --- */
+.markdown-content a {
+  color: #2563eb; /* blue-600 - better contrast on cream background */
+  text-decoration: underline;
+  text-decoration-color: rgba(37, 99, 235, 0.7); /* blue-600/70 */
+  font-weight: 500;
+  transition: all 0.2s ease-in-out;
+}
+
+.markdown-content a:hover {
+  color: #1e40af; /* blue-700 */
+  text-decoration-color: #1e40af;
+}
+
+/* --- Lists --- */
+.markdown-content ul,
+.markdown-content ol {
+  padding-left: 2em;
+}
+
+.markdown-content ul ul,
+.markdown-content ul ol,
+.markdown-content ol ol,
+.markdown-content ol ul {
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
+.markdown-content li {
+  margin-bottom: .25em;
+}
+
+.markdown-content li > p {
+  margin-top: 0.5rem;
+}
+
+.markdown-content ul { list-style-type: disc; }
+.markdown-content ol { list-style-type: decimal; }
+.markdown-content ul ul { list-style-type: circle; }
+.markdown-content ol ol { list-style-type: lower-alpha; }
+.markdown-content ul ul ul { list-style-type: square; }
+.markdown-content ol ol ol { list-style-type: lower-roman; }
+
+/* --- Code --- */
+.markdown-content code {
+  font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, Courier, monospace;
+  font-size: 0.9em;
+  background-color: #374151; /* gray-700 */
+  color: #e5e7eb; /* gray-200 */
+  padding: .2em .4em;
+  margin: 0;
+  border-radius: 6px;
+  white-space: break-spaces;
+}
+
+.markdown-content pre {
+  font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, Courier, monospace;
+  font-size: 0.9em;
+  padding: 1rem;
+  overflow: auto;
+  line-height: 1.5;
+  background-color: #1f2937; /* gray-800 */
+  color: #e5e7eb; /* gray-200 */
+  border: 1px solid #4b5563; /* gray-600 */
+  border-radius: 8px;
+}
+
+.markdown-content pre code {
+  display: inline;
+  padding: 0;
+  margin: 0;
+  overflow: visible;
+  line-height: inherit;
+  word-wrap: normal;
+  background-color: transparent;
+  border: 0;
+  color: inherit;
+}
+
+/* --- Blockquotes --- */
+.markdown-content blockquote {
+  padding: 0.5rem 1rem;
+  margin-left: 0;
+  color: white  ; /* inherit from parent theme */
+  background-color: #1f2937; /* gray-800 */
+  border-left: .25em solid #4b5563; /* gray-600 */
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
+  overflow: hidden;
+}
+
+.markdown-content blockquote > :first-child {
+    margin-top: 0;
+}
+
+.markdown-content blockquote > :last-child {
+    margin-bottom: 0;
+}
+
+/* --- Tables --- */
+.markdown-content table {
+  width: 100%;
+  border-collapse: collapse;
+  display: block;
+  overflow: auto;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
+  overflow: hidden;
+}
+
+.markdown-content th,
+.markdown-content td {
+  padding: .75rem 1rem;
+  border: 1px solid #d4c5b9; /* warm beige border */
+  text-align: left;
+}
+
+.markdown-content th {
+  font-weight: 600;
+  background-color: #6b5d54; /* warm brown header */
+  color: #ffffff; /* white text */
+  text-transform: capitalize;
+}
+
+.markdown-content td {
+  background-color: #fefdfb; /* very light warm white */
+  color: #2d2520; /* dark warm brown text */
+}
+
+.markdown-content table tr:nth-child(2n) td {
+  background-color: #f5f0eb; /* light warm beige for alternating rows */
+}
+
+/* --- Horizontal Rule --- */
+.markdown-content hr {
+  height: 1px;
+  padding: 0;
+  margin: 24px 0;
+  background-color: #374151; /* gray-700 */
+  border: 0;
+}
+
+/* --- Images --- */
+.markdown-content img {
+  max-width: 100%;
+  box-sizing: content-box;
+  background-color: #111827;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+
+/* --- Misc --- */
+.markdown-content strong { font-weight: 600; }
+.markdown-content em { font-style: italic; }
+.markdown-content del { text-decoration: line-through; }
+
+.markdown-content .task-list-item {
+  list-style-type: none;
+}
+
+.markdown-content .task-list-item input[type="checkbox"] {
+  margin: 0 .2em .25em -1.6em;
+  vertical-align: middle;
+}
+
+/* --- Responsive adjustments for mobile --- */
+@media (max-width: 768px) {
+  .markdown-content h1 {
+    font-size: 1.5em;
+  }
+  .markdown-content h2 {
+    font-size: 1.25em;
+  }
+  .markdown-content h3 {
+    font-size: 1.15em;
+  }
+}
+
+/* --- Custom Multiple Choice Container --- */
+.multiple-choice-container {
+  margin: 1rem 0;
+}
+
+.multiple-choice-question {
+  margin-bottom: 0.75rem;
+  padding: 1rem;
+  background-color: #1f2937; /* gray-800 */
+  border: 1px solid #374151; /* gray-700 */
+  border-radius: 0.5rem;
+  line-height: 1.6;
+}
+
+/* --- Custom Multiple Choice List --- */
+.multiple-choice-list {
+  list-style: none;
+  padding: 0;
+  margin: 0 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  padding-left: 0!important;
+}
+
+.multiple-choice-item {
+  display: flex;
+  align-items: center;
+  border: 1px solid #4b5563; /* gray-600 */
+  background-color: #1f2937; /* gray-800 */
+  padding: 0.75rem 1rem;
+  border-radius: 0.5rem;
+  transition: all 0.2s ease-in-out;
+  cursor: pointer;
+}
+
+.multiple-choice-item:hover {
+  background-color: #374151; /* gray-700 */
+  border-color: #6b7280; /* gray-500 */
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.choice-letter {
+  font-weight: 600;
+  color: #93c5fd; /* blue-300 */
+  margin-right: 0.75rem;
+  flex-shrink: 0;
+}
+
+.choice-content {
+  color: #000000; /* black */
+  flex-grow: 1;
+}
+
+/* --- Math in Choice Buttons --- */
+.choice-math-content .markdown-content {
+  display: inline;
+}
+
+.choice-math-content .markdown-content p {
+  display: inline;
+  margin: 0;
+  line-height: 1.4;
+}
+
+.choice-math-content .katex {
+  font-size: 1.3em;
+  color: inherit;
+  vertical-align: middle;
+}
+
+.choice-math-content .katex-display {
+  display: inline;
+  margin: 0;
+  padding: 0;
+}
+
+/* Ensure proper inline math rendering in buttons */
+.choice-math-content .katex .katex-html {
+  white-space: nowrap;
+}
+
+/* Make fractions more readable */
+.choice-math-content .katex .frac .frac-line {
+  border-bottom-width: 0.1em;
+}
+
+.choice-math-content .katex .frac .numerator {
+  font-size: 0.8em;
+}
+
+.choice-math-content .katex .frac .denominator {
+  font-size: 0.8em;
+}
+
+/* Boost overall math display size */
+.choice-math-content .katex .mord {
+  font-size: 1.1em;
+}
+
+.choice-math-content .katex .frac {
+  vertical-align: -0.1em;
+}
+
+/* --- Global Math Styling --- */
+.markdown-content .katex {
+  color: inherit;
+}
+
+.markdown-content .katex-display {
+  position: relative;
+  margin: 1rem 0;
+  padding: 0.9rem 1.1rem;
+  background: linear-gradient(180deg, var(--math-surface-1) 0%, var(--math-surface-2) 100%);
+  border: 1px solid rgba(99, 102, 241, 0.35);
+  border-radius: 12px;
+  box-shadow:
+    0 10px 28px rgba(99, 102, 241, 0.12),
+    inset 0 1px 0 rgba(255, 255, 255, 0.04);
+  transition: box-shadow 180ms ease, border-color 180ms ease, transform 180ms ease;
+  animation: kxFadeInUp 200ms ease;
+}
+
+.markdown-content .katex-display::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 3px;
+  background: linear-gradient(to bottom, var(--math-accent-1), var(--math-accent-2));
+  border-radius: 12px 0 0 12px;
+  opacity: 0.95;
+}
+
+.markdown-content .katex-display:hover {
+  border-color: rgba(99, 102, 241, 0.55);
+  box-shadow:
+    0 14px 36px rgba(99, 102, 241, 0.18),
+    inset 0 1px 0 rgba(255, 255, 255, 0.06);
+}
+
+.markdown-content .katex-display > .katex {
+  display: block;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.markdown-content .katex-display::after {
+  content: "∑";
+  position: absolute;
+  left: 10px;
+  top: 6px;
+  font-size: 0.85rem;
+  color: rgba(99,102,241,0.6);
+  text-shadow: 0 0 12px rgba(99,102,241,0.25);
+}
+
+/* Style equation tags (e.g., from \tag{...}) as floating pills */
+.markdown-content .katex-display .tag {
+  position: absolute;
+  top: 6px;
+  right: 8px;
+  font-size: 0.72rem;
+  padding: 0.1rem 0.4rem;
+  border-radius: 9999px;
+  background: linear-gradient(90deg, rgba(99,102,241,0.15), rgba(56,189,248,0.15));
+  border: 1px solid rgba(99,102,241,0.35);
+  color: #cbd5e1; /* slate-300 */
+}
+
+.markdown-content .katex .frac .frac-line {
+  border-bottom-width: 0.08em;
+}
+
+.markdown-content .katex .tag { /* equation numbers if used */
+  color: #9ca3af; /* gray-400 */
+}
+
+/* Subtle highlight for inline math */
+.markdown-content :not(pre) > code.katex-inline,
+.markdown-content .katex-inline {
+  background-color: rgba(55, 65, 81, 0.35); /* gray-700/35 */
+  padding: 0.1rem 0.3rem;
+  border-radius: 4px;
+  vertical-align: -0.05em;
+}
+
+/* KaTeX HTML layer fine-tuning */
+.markdown-content .katex .katex-html {
+  font-variant-numeric: tabular-nums lining-nums;
+  font-feature-settings: "tnum" 1, "lnum" 1;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  letter-spacing: 0.003em;
+  user-select: text;
+}
+
+.markdown-content .katex .katex-html .mord.text {
+  font-family: inherit;
+  font-weight: 500;
+}
+
+/* Remove top margin for the first header tags inside markdown */
+.markdown-content h1:first-child,
+.markdown-content h2:first-child,
+.markdown-content h3:first-child,
+.markdown-content h4:first-child,
+.markdown-content h5:first-child,
+.markdown-content h6:first-child {
+  margin-top: 0;
+}
+
+/* Fine-tune common KaTeX token classes for better readability */
+.markdown-content .katex .text,
+.markdown-content .katex .mord.text {
+  font-family: inherit;
+  letter-spacing: 0.01em;
+}
+
+.markdown-content .katex .mrel,
+.markdown-content .katex .mbin,
+.markdown-content .katex .mpunct,
+.markdown-content .katex .mopen,
+.markdown-content .katex .mclose {
+  color: inherit;
+  opacity: 0.9; /* subtle deemphasis so symbols don't overpower operands */
+}
+
+/* Enhance fraction bar and radicals for clarity */
+.markdown-content .katex .frac .frac-line { border-bottom-width: 0.095em; }
+.markdown-content .katex .sqrt .sqrt-line { border-top-width: 0.095em; }
+.markdown-content .katex .overline .overline-line { border-top-width: 0.095em; }
+.markdown-content .katex .underline .underline-line { border-bottom-width: 0.095em; }
+
+/* Mobile tweaks: slightly reduce spacing produced by mspace to save width */
+@media (max-width: 640px) {
+  .markdown-content .katex-inline { font-size: 1.05em; }
+  .markdown-content .katex .mspace { margin-left: 0.12em !important; margin-right: 0.12em !important; }
+  .markdown-content .katex-display { padding: 0.5rem 0.75rem; }
+}
+ 
+
+.markdown-content .katex-display{
+  background: white!important;
+  overflow: hidden!important;
+}
+
+/* Optimized Streaming Markdown - Smooth rendering */
+.optimized-streaming-content {
+  /* Enable hardware acceleration for smooth animations */
+  transform: translateZ(0);
+  backface-visibility: hidden;
+  -webkit-font-smoothing: subpixel-antialiased;
+}
+
+.streaming-block-wrapper {
+  /* Optimize rendering performance */
+  will-change: contents;
+  contain: layout style;
+}
+
+/* Smooth transitions for streaming content */
+.streaming-block-wrapper > * {
+  animation: fadeInSmooth 0.15s ease-out;
+}
+
+@keyframes fadeInSmooth {
+  from {
+    opacity: 0.95;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* Prevent layout shifts during streaming */
+.optimized-streaming-content .katex {
+  display: inline-block;
+  vertical-align: middle;
+}
+
+.optimized-streaming-content .katex-display {
+  will-change: auto;
+  contain: layout paint;
+}
+
