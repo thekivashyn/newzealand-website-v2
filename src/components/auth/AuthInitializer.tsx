@@ -23,10 +23,31 @@ export const AuthInitializer = component$(() => {
       try {
         const { user: verifiedUser } = await authVerify(token);
         authActions.initialize(verifiedUser, token);
-      } catch {
-        logger.warn('Token verification failed, clearing auth');
+      } catch (error: any) {
+        // 🚀 FIX: Only clear token if it's DEFINITELY a 401 (token expired/invalid)
+        // Network errors, timeouts, 5xx errors = temporary issues, NOT auth failures
+        const isAuthError = error.isAuthError === true || error.status === 401;
+        const isNetworkError = error.isNetworkError === true || (error.name === 'TypeError' && error.message?.includes('fetch'));
+        
+        if (isAuthError) {
+          // Token is definitely invalid/expired - clear auth
+          logger.warn('🔒 Token invalid (401), clearing auth data');
         authActions.logout();
-        hasInitialized.value = false; // Reset flag on logout
+          hasInitialized.value = false; // Reset flag on logout
+        } else if (isNetworkError) {
+          // 🚀 PRESERVE TOKEN: Network errors are temporary, keep token and user
+          logger.warn('⚠️ Auth verification failed but token preserved (network error):', error.message);
+          // Keep user logged in with cached data - token might still be valid
+          authActions.setLoading(false);
+        } else {
+          // Other errors (5xx, etc.) - also preserve token
+          logger.warn('⚠️ Auth verification failed but token preserved (server error):', {
+            message: error.message,
+            status: error.status
+          });
+          // Keep user logged in with cached data
+          authActions.setLoading(false);
+        }
       }
     } else {
       // No token/user - set as not authenticated (this will set isLoading=false)

@@ -10,6 +10,7 @@ interface UserAvatarPopoverProps {
 export const UserAvatarPopover = component$<UserAvatarPopoverProps>((props) => {
   const authActions = useAuthActions();
   const auth = useStore(authStore);
+  const user = useSignal(authStore.user);
   
   const isOpen = useSignal(false);
   const buttonRef = useSignal<HTMLElement>();
@@ -22,13 +23,27 @@ export const UserAvatarPopover = component$<UserAvatarPopoverProps>((props) => {
     arrowTop: number;
   }>({ left: 0, top: 0, showArrow: false, arrowPosition: 'left', arrowTop: 0 });
 
+  // Sync with authStore changes via events
+  // eslint-disable-next-line qwik/no-use-visible-task
+  useVisibleTask$(() => {
+    const handleAuthStateChange = () => {
+      user.value = authStore.user;
+    };
+
+    window.addEventListener('auth:state-changed', handleAuthStateChange);
+
+    return () => {
+      window.removeEventListener('auth:state-changed', handleAuthStateChange);
+    };
+  });
+
   // Get user name from first_name and last_name
-  const fullName = auth.user?.first_name && auth.user?.last_name 
-    ? `${auth.user.first_name} ${auth.user.last_name}`.trim() 
-    : auth.user?.email?.split('@')[0] || '';
+  const fullName = user.value?.first_name && user.value?.last_name 
+    ? `${user.value.first_name} ${user.value.last_name}`.trim() 
+    : user.value?.email?.split('@')[0] || '';
   
   // Get grade from grade_meta
-  const grade = auth.user?.grade_meta?.grade;
+  const grade = user.value?.grade_meta?.grade;
 
   const handleToggle = $(() => {
     if (!isOpen.value && buttonRef.value && typeof window !== 'undefined') {
@@ -105,7 +120,7 @@ export const UserAvatarPopover = component$<UserAvatarPopoverProps>((props) => {
     };
   });
 
-  if (!auth.isAuthenticated || !auth.user) {
+  if (!auth.isAuthenticated || !user.value) {
     return <>{props.children}</>;
   }
 
@@ -172,7 +187,7 @@ export const UserAvatarPopover = component$<UserAvatarPopoverProps>((props) => {
                     {fullName}
                   </p>
                   <p class="text-xs text-gray-400 font-medium truncate">
-                    {grade ? `Grade ${grade}` : auth.user?.email}
+                    {grade ? `Grade ${grade}` : user.value?.email}
                   </p>
                 </div>
               </div>

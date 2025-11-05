@@ -54,16 +54,16 @@ export const useChatStreaming = () => {
           }
 
           const data = trimmed.slice(6);
-          
-          // Handle [DONE] signal
-          if (data === '[DONE]') {
-            streamComplete = true;
-            break;
-          }
-
-          try {
-            const parsed = JSON.parse(data);
             
+          // Handle [DONE] signal
+            if (data === '[DONE]') {
+            streamComplete = true;
+              break;
+            }
+
+            try {
+              const parsed = JSON.parse(data);
+              
             // Handle OpenAI streaming format: { choices: [{ delta: { content: "..." } }] }
             if (parsed.choices && Array.isArray(parsed.choices) && parsed.choices.length > 0) {
               const choice = parsed.choices[0];
@@ -126,9 +126,9 @@ export const useChatStreaming = () => {
       }
     } catch (error: any) {
       if (error.name !== 'AbortError') {
-        console.error('Streaming error:', error);
-        streamingMessage.value = null;
-        throw error;
+      console.error('Streaming error:', error);
+      streamingMessage.value = null;
+      throw error;
       }
     } finally {
       isStreaming.value = false;

@@ -153,15 +153,15 @@ export const useQuestionHandler = (props: UseQuestionHandlerProps) => {
     
     // 🚀 STEP 2: Store user message for multiple_choice type
     // Multiple choice ALWAYS calls store-message (preset response flow will add AI message later)
-    storeMessageOnlyClient({
+      storeMessageOnlyClient({
       messages: [userMessage],
-      chatId,
-      subject: props.subject || null,
-      topic: props.topic || null,
-      title: question.value?.substring(0, 50) || 'Multiple Choice Question',
-    }).catch((error) => {
-      console.error('Failed to store multiple choice message:', error);
-    });
+        chatId,
+        subject: props.subject || null,
+        topic: props.topic || null,
+        title: question.value?.substring(0, 50) || 'Multiple Choice Question',
+      }).catch((error) => {
+        console.error('Failed to store multiple choice message:', error);
+      });
     
     // If has preset response, it will be handled by usePresetResponse composable
     // which will add AI message to store-message after fake streaming completes

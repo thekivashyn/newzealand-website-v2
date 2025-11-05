@@ -91,15 +91,27 @@ export const EmptyChat = component$<EmptyChatProps>((props) => {
     const subject = currentChatSubject.value;
     const topic = currentChatTopic.value;
     const subCategory = currentChatSubCategory.value;
-    const userGrade = authUser.value?.grade_meta?.grade || "10";
-    
+  const userGrade = authUser.value?.grade_meta?.grade || "10";
+  
+    // Debug logging
+    console.log('📋 EmptyChat - Step calculation:', {
+      chatId,
+      term,
+      subject,
+      topic,
+      subCategory,
+      userGrade
+    });
+  
     // Step 0: Welcome (no term, subject, topic, and no chat ID)
     if (!chatId && !term && !subject && !topic) {
+      console.log('📋 EmptyChat - Returning Step 0 (Welcome)');
       return 0;
     }
     
     // Step 5: PresetQuestionsStep - have term, subject, topic, and subCategory
     if (term && subject && topic && subCategory) {
+      console.log('📋 EmptyChat - Returning Step 5 (PresetQuestionsStep - with subCategory)');
       return 5;
     }
     
@@ -110,28 +122,34 @@ export const EmptyChat = component$<EmptyChatProps>((props) => {
       const topicData = topics?.find(t => t.title === topic);
       
       if (topicData?.subCategories && topicData.subCategories.length > 0) {
+        console.log('📋 EmptyChat - Returning Step 4 (SubCategorySelectionStep)');
         return 4; // SubCategorySelectionStep - need to select sub-category
       } else {
+        console.log('📋 EmptyChat - Returning Step 5 (PresetQuestionsStep - no subCategory)');
         return 5; // PresetQuestionsStep - no sub-categories, go directly to questions
       }
     }
     
     // Step 3: TopicSelectionStep - have term and subject, need topic
     if (term && subject) {
+      console.log('📋 EmptyChat - Returning Step 3 (TopicSelectionStep)');
       return 3;
     }
     
     // Step 2: SubjectSelectionStep - have term, need subject
-    // PILOT MODE: Skip SubjectSelection (step 2) and go directly to TopicSelection (step 3)
+    // PILOT_MODE: Skip SubjectSelection (step 2) and go directly to TopicSelection (step 3)
     if (term) {
       if (PILOT_MODE_MATH_ONLY) {
+        console.log('📋 EmptyChat - Returning Step 3 (TopicSelectionStep - PILOT MODE)');
         return 3; // TopicSelectionStep - skip subject selection in pilot mode
       } else {
+        console.log('📋 EmptyChat - Returning Step 2 (SubjectSelectionStep)');
         return 2; // SubjectSelectionStep - have term, need to select subject
       }
     }
     
     // Step 1: TermSelectionStep - need term
+    console.log('📋 EmptyChat - Returning Step 1 (TermSelectionStep)');
     return 1;
   })();
 

@@ -16,31 +16,31 @@ interface FetchChatHistoryResponse {
 
 // Client-side fetch for chat history (can access localStorage)
 export async function fetchChatHistory(options: { page?: number; limit?: number } = {}): Promise<FetchChatHistoryResponse> {
-  const { page = 1, limit = 20 } = options;
+    const { page = 1, limit = 20 } = options;
   const token = getAuthToken();
   
   if (!token) {
     throw new Error('Authentication token not found');
   }
-  
-  const response = await fetch(
-    `${API_BASE_URL}/history?page=${page}&limit=${limit}`,
-    {
-      headers: {
-        Authorization: `Bearer ${token}`,
-        'Cache-Control': 'no-cache',
-        Pragma: 'no-cache',
-      },
-      cache: 'no-store',
+    
+    const response = await fetch(
+      `${API_BASE_URL}/history?page=${page}&limit=${limit}`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Cache-Control': 'no-cache',
+          Pragma: 'no-cache',
+        },
+        cache: 'no-store',
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error(`HTTP ${response.status}: Failed to fetch chat history`);
     }
-  );
 
-  if (!response.ok) {
-    throw new Error(`HTTP ${response.status}: Failed to fetch chat history`);
+    return response.json();
   }
-
-  return response.json();
-}
 
 export async function deleteChatHistory(chatId: string): Promise<void> {
   const token = getAuthToken();

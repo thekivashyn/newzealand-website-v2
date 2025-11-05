@@ -10,6 +10,7 @@ interface ChatInputProps {
   onStop$: () => void;
   messages: ChatMessage[];
   streamingMessage: ChatMessage | null;
+  onLetsPracticeClick$?: () => void;
 }
 
 /**
@@ -64,7 +65,7 @@ export const ChatInput = component$<ChatInputProps>((props) => {
     if (isSubmitting.value) return;
     props.onInputChange$(value);
   });
-  
+
   const handleSubmit$ = $(async (e: Event) => {
     e.preventDefault();
     
@@ -181,6 +182,11 @@ export const ChatInput = component$<ChatInputProps>((props) => {
             <div class="absolute -top-3 sm:-top-4 right-2 sm:right-4 flex gap-1.5 sm:gap-2 z-20">
               <button
                 type="button"
+                onClick$={() => {
+                  if (props.onLetsPracticeClick$) {
+                    props.onLetsPracticeClick$();
+                  }
+                }}
                 class="flex disabled:opacity-50 cursor-pointer items-center gap-1 sm:gap-1.5 px-2.5 sm:px-3 py-1.5 sm:py-2 bg-[#1B7A7A] hover:bg-[#14B8A6] text-white text-xs sm:text-sm font-semibold rounded-lg sm:rounded-xl transition-all duration-300 hover:scale-105 active:scale-95 focus:outline-none focus:ring-2 focus:ring-[#14B8A6]/30 shadow-lg hover:shadow-xl hover:shadow-[#14B8A6]/20 backdrop-blur-sm border border-[#1B7A7A]/30 touch-manipulation"
                 disabled={isStreaming || isSubmitting.value}
               >
@@ -209,18 +215,18 @@ export const ChatInput = component$<ChatInputProps>((props) => {
             </label>
             
             {/* Textarea */}
-            <textarea
+              <textarea
               id="chat-message-input"
-              ref={textareaRef}
+                ref={textareaRef}
               value={props.input || ''}
               onInput$={(e) => {
                 const value = (e.target as HTMLTextAreaElement).value;
                 handleInputChange$(value);
               }}
-              onKeyDown$={handleKeyDown$}
-              placeholder="Ask me anything about this problem"
+                onKeyDown$={handleKeyDown$}
+                placeholder="Ask me anything about this problem"
               disabled={isStreaming || isSubmitting.value}
-              rows={1}
+                rows={1}
               class="w-full resize-none border-none bg-transparent py-3 sm:py-4 px-3 sm:px-4 text-sm sm:text-base text-white placeholder-slate-400/70 focus:outline-none focus:ring-0 font-medium leading-6 relative z-10 transition-all duration-300 drop-shadow-sm selection:bg-cyan-400/30 selection:text-white disabled:opacity-60 disabled:cursor-not-allowed"
               aria-label="Ask me anything about this problem"
               aria-disabled={isStreaming || isSubmitting.value}
@@ -236,12 +242,12 @@ export const ChatInput = component$<ChatInputProps>((props) => {
 
               {/* Submit/Stop button */}
               {isStreaming ? (
-                <button
+            <button
                   type="button"
                   onClick$={props.onStop$}
                   class="flex h-10 w-10 sm:h-11 sm:w-11 cursor-pointer items-center justify-center rounded-full bg-gradient-to-br from-red-600/90 via-red-700/80 to-red-800/90 text-white transition-all duration-500 hover:scale-110 hover:rotate-3 active:scale-95 focus:outline-none disabled:scale-100 disabled:opacity-50 relative overflow-hidden group/btn border border-red-400/40 hover:border-red-300/60 touch-manipulation"
                   aria-label="Stop generating"
-                >
+            >
                   {/* Animated background shimmer */}
                   <div class="absolute inset-0 rounded-full bg-gradient-to-r from-transparent via-white/15 to-transparent opacity-0 group-hover/btn:opacity-100 transition-all duration-500" />
 
@@ -254,7 +260,7 @@ export const ChatInput = component$<ChatInputProps>((props) => {
                   <svg class="h-5 w-5 sm:h-6 sm:w-6 relative z-10 drop-shadow-sm transition-all duration-300 group-hover/btn:-translate-y-0.5 group-hover/btn:scale-110 group-hover/btn:drop-shadow-lg" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                     <rect x="6" y="6" width="4" height="12" rx="1" />
                     <rect x="14" y="6" width="4" height="12" rx="1" />
-                  </svg>
+                </svg>
                 </button>
               ) : (
                 <button
@@ -283,13 +289,13 @@ export const ChatInput = component$<ChatInputProps>((props) => {
 
                   <svg class="h-5 w-5 sm:h-6 sm:w-6 relative z-10 drop-shadow-sm transition-all duration-300 group-hover/btn:-translate-y-0.5 group-hover/btn:scale-110 group-hover/btn:drop-shadow-lg" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                     <path fill-rule="evenodd" d="M11.47 4.72a.75.75 0 011.06 0l7.5 7.5a.75.75 0 11-1.06 1.06L12 6.31l-6.97 6.97a.75.75 0 01-1.06-1.06l7.5-7.5z" clip-rule="evenodd" />
-                  </svg>
+                </svg>
                 </button>
               )}
             </div>
           </div>
-        </div>
-      </form>
+          </div>
+        </form>
     </div>
   );
 });

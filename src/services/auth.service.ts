@@ -63,6 +63,7 @@ export const authLogin = server$(async (data: LoginRequest): Promise<AuthRespons
 });
 
 export const authVerify = server$(async (token: string): Promise<{ user: User }> => {
+  try {
   const response = await fetch(`${API_BASE_URL}/auth/verify`, {
     method: 'GET',
     headers: {
@@ -72,14 +73,32 @@ export const authVerify = server$(async (token: string): Promise<{ user: User }>
   });
 
   if (!response.ok) {
+      // Create error with status code for better error handling
+      const error = new Error('Auth verification failed') as Error & { status?: number; isAuthError?: boolean };
+      error.status = response.status;
+      error.isAuthError = response.status === 401; // Only 401 = token expired/invalid
+      
     if (response.status === 401) {
-      throw new Error('Token expired or invalid');
-    }
+        error.message = 'Token expired or invalid';
+      } else {
     const errorData = await response.json().catch(() => ({}));
-    throw new Error(errorData.message || 'Auth verification failed');
+        error.message = errorData.message || 'Auth verification failed';
+      }
+      
+      throw error;
   }
 
   return response.json();
+  } catch (error: any) {
+    // Re-throw with status info if it's a fetch error
+    if (error.name === 'TypeError' && error.message.includes('fetch')) {
+      const networkError = new Error('Network error during token verification') as Error & { isNetworkError?: boolean };
+      networkError.isNetworkError = true;
+      throw networkError;
+    }
+    // Re-throw other errors (already have status info)
+    throw error;
+  }
 });
 
 // Client-side auth service (for token management)

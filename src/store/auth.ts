@@ -119,6 +119,13 @@ export const authActions = {
   updateUser: (user: User) => {
     authStore.user = user;
     saveAuthToStorage({ user, token: authStore.token });
+    
+    // Dispatch custom event for reactivity
+    if (typeof window !== 'undefined') {
+      window.dispatchEvent(new CustomEvent('auth:state-changed', { 
+        detail: { user, token: authStore.token } 
+      }));
+    }
   },
 
   setLoading: (loading: boolean) => {

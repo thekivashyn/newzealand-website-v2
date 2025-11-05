@@ -22,7 +22,7 @@ export default component$(() => {
       // Only update if different to avoid unnecessary re-renders
       if (chatIdFromUrl !== chatStore.currentChatId) {
         // Set chatId first
-        chatActions.setCurrentChatId(chatIdFromUrl);
+      chatActions.setCurrentChatId(chatIdFromUrl);
         
         // Always load chat when chatId is in URL (unless it's explicitly a new chat)
         // This handles cases like:

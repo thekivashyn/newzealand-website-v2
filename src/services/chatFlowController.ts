@@ -128,6 +128,16 @@ export class ChatFlowController {
       // Set messages to store
       chatActions.setMessages(response.messages);
       
+      // Set chat context (topic, subject, term, subCategory) from response
+      if (response.topic || response.subject) {
+        uiActions.setCurrentChatContext({
+          term: response.term || null,
+          subject: response.subject || null,
+          topic: response.topic || null,
+          subCategory: response.subCategory || null,
+        });
+      }
+      
       // Clear chatMethod after loading (to allow future loads)
       uiActions.setChatMethod(null);
 

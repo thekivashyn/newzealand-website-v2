@@ -12,6 +12,12 @@ interface FetchChatMessagesResponse {
     totalPages: number;
     hasNextPage: boolean;
   };
+  // Chat context info from backend
+  subject?: string | null;
+  topic?: string | null;
+  mode?: string | null;
+  term?: string | null;
+  subCategory?: string | null;
 }
 
 /**
@@ -81,6 +87,12 @@ export async function fetchChatMessages(
       totalPages: 0,
       hasNextPage: false,
     },
+    // Include chat context from backend
+    subject: data.subject || null,
+    topic: data.topic || null,
+    mode: data.mode || null,
+    term: data.term || null,
+    subCategory: data.subCategory || null,
   };
 }
 

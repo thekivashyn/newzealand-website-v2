@@ -1,22 +1,37 @@
-import { component$, useStore, $ } from '@builder.io/qwik';
+import { component$, useStore, $, useSignal, useVisibleTask$ } from '@builder.io/qwik';
 import { useAuthActions } from '../../composables/useAuth';
 import { authStore } from '~/store/auth';
 
 export const UserProfile = component$(() => {
   const authActions = useAuthActions();
   const auth = useStore(authStore);
+  const user = useSignal(authStore.user);
 
-  if (!auth.isAuthenticated || !auth.user) {
+  // Sync with authStore changes via events
+  // eslint-disable-next-line qwik/no-use-visible-task
+  useVisibleTask$(() => {
+    const handleAuthStateChange = () => {
+      user.value = authStore.user;
+    };
+
+    window.addEventListener('auth:state-changed', handleAuthStateChange);
+
+    return () => {
+      window.removeEventListener('auth:state-changed', handleAuthStateChange);
+    };
+  });
+
+  if (!auth.isAuthenticated || !user.value) {
     return null;
   }
 
   // Get user name from first_name and last_name
-  const fullName = auth.user.first_name && auth.user.last_name 
-    ? `${auth.user.first_name} ${auth.user.last_name}`.trim() 
-    : auth.user.email?.split('@')[0] || '';
+  const fullName = user.value.first_name && user.value.last_name 
+    ? `${user.value.first_name} ${user.value.last_name}`.trim() 
+    : user.value.email?.split('@')[0] || '';
   
   // Get grade from grade_meta
-  const grade = auth.user.grade_meta?.grade;
+  const grade = user.value.grade_meta?.grade;
 
   const handleLogout = $(() => {
     authActions.logout();
@@ -38,7 +53,7 @@ export const UserProfile = component$(() => {
             {fullName}
           </p>
           <p class="text-[10px] sm:text-xs text-gray-400 group-hover:text-gray-300 transition-colors duration-300 font-semibold truncate">
-            {grade ? `Grade ${grade}` : auth.user?.email}
+            {grade ? `Grade ${grade}` : user.value?.email}
           </p>
         </div>
         <div class="flex items-center gap-x-0.5 sm:gap-x-1 flex-shrink-0">

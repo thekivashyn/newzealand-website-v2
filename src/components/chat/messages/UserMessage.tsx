@@ -2,6 +2,8 @@ import { component$, useSignal, $ } from '@builder.io/qwik';
 import type { ChatMessage } from '~/store/types';
 import { ImageQuestionTemplate } from '../shared/ImageQuestionTemplate';
 import { MultipleChoiceTemplate } from '../shared/MultipleChoiceTemplate';
+import { AnswerTemplate, type AnswerSubmission } from '../shared/AnswerTemplate';
+import { uiStore } from '~/store/ui';
 
 interface UserMessageProps {
   message: ChatMessage;
@@ -15,14 +17,17 @@ export const UserMessage = component$<UserMessageProps>((props) => {
   const textContent = typeof props.message.content === 'string' ? props.message.content : '';
   const imageQuestionPrefix = '<-Image Question Template-> ';
   const multipleChoicePrefix = '<-Multiple Choice Template-> ';
+  const answerTemplatePrefix = '<-Answer Template-> ';
   
   // Memoize template detection and parsing
   const templateData = (() => {
     const isImageQuestion = textContent.includes(imageQuestionPrefix);
     const isMultipleChoice = textContent.includes(multipleChoicePrefix);
+    const isAnswerTemplate = textContent.includes(answerTemplatePrefix);
     
     let imageQuestionData: any = null;
     let multipleChoiceData: any = null;
+    let answerSubmission: AnswerSubmission | null = null;
     
     if (isImageQuestion) {
       try {
@@ -42,18 +47,29 @@ export const UserMessage = component$<UserMessageProps>((props) => {
       }
     }
     
+    if (isAnswerTemplate) {
+      try {
+        const content = textContent.replace(answerTemplatePrefix, '').trim();
+        answerSubmission = JSON.parse(content) as AnswerSubmission;
+      } catch (e) {
+        console.error('Failed to parse answer template data:', e);
+      }
+    }
+    
     return {
       isImageQuestion,
       isMultipleChoice,
+      isAnswerTemplate,
       imageQuestionData,
       multipleChoiceData,
-      processedTextContent: isImageQuestion || isMultipleChoice 
-        ? textContent.replace(imageQuestionPrefix, '').replace(multipleChoicePrefix, '')
+      answerSubmission,
+      processedTextContent: isImageQuestion || isMultipleChoice || isAnswerTemplate
+        ? textContent.replace(imageQuestionPrefix, '').replace(multipleChoicePrefix, '').replace(answerTemplatePrefix, '')
         : textContent,
     };
   })();
   
-  const { imageQuestionData, multipleChoiceData, processedTextContent } = templateData;
+  const { imageQuestionData, multipleChoiceData, answerSubmission, isAnswerTemplate, processedTextContent } = templateData;
   
   const handleCopy$ = $(async () => {
     if (props.onCopy) {
@@ -69,17 +85,25 @@ export const UserMessage = component$<UserMessageProps>((props) => {
 
   return (
     <div class={`group relative flex flex-col items-end space-y-1.5 sm:space-y-2 ${
-      imageQuestionData || multipleChoiceData ? 'w-full' : 'max-w-xl sm:max-w-2xl'
+      imageQuestionData || multipleChoiceData || answerSubmission || isAnswerTemplate ? 'w-full' : 'max-w-xl sm:max-w-2xl'
     }`}>
       <div
         class={`${
-          imageQuestionData || multipleChoiceData ? 'w-full' : 'max-w-fit'
+          imageQuestionData || multipleChoiceData || answerSubmission || isAnswerTemplate ? 'w-full' : 'max-w-fit'
         } rounded-2xl text-white bg-[#1B7A7A] ${
-          imageQuestionData || multipleChoiceData ? 'p-0 bg-transparent' : 
+          imageQuestionData || multipleChoiceData || answerSubmission || isAnswerTemplate ? 'p-0 bg-transparent' : 
           'px-3 py-1.5 sm:px-4 sm:py-2'
         }`}
       >
-        {multipleChoiceData ? (
+        {answerSubmission ? (
+          <div class="w-full">
+            <AnswerTemplate 
+              submission={answerSubmission} 
+              displayMode="submitted"
+              subject={uiStore.currentChatSubject || undefined}
+            />
+          </div>
+        ) : multipleChoiceData ? (
           <div class="w-full">
             <MultipleChoiceTemplate data={multipleChoiceData} />
           </div>
@@ -93,7 +117,7 @@ export const UserMessage = component$<UserMessageProps>((props) => {
       </div>
 
       {/* Hover Actions - Hidden for templates */}
-      {!multipleChoiceData && (
+      {!multipleChoiceData && !answerSubmission && (
         <div class="absolute top-0 right-full mr-1.5 sm:mr-2 flex items-center space-x-1 opacity-0 transition-opacity duration-200 group-hover:opacity-100">
           <button
             onClick$={handleCopy$}

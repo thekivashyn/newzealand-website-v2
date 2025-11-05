@@ -545,3 +545,8 @@
   contain: layout paint;
 }
 
+/* Hide KaTeX MathML elements */
+.katex-mathml {
+  display: none !important;
+}
+
